@@ -86,4 +86,5 @@ Now, use the `code` directive with `"scala"` as an argument:
 {{#code "scala"}}
 val hello = "world"
 {{/code}}
+</div>
 ```
