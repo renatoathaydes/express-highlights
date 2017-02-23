@@ -1,12 +1,13 @@
-var request = require("request");
-var chai = require("chai");
-var http = require('http');
-var express = require('express');
-var exphbs = require('express-handlebars');
-var codeHighlight = require("..");
+const request = require("request");
+const chai = require("chai");
+const http = require('http');
+const express = require('express');
+const exphbs = require('express-handlebars');
+const codeHighlight = require("..");
 const assert = require('assert');
+const cheerio = require('cheerio');
 
-var expect = chai.expect;
+const expect = chai.expect;
 
 assert(typeof codeHighlight === 'function');
 
@@ -41,7 +42,6 @@ describe("A Server with the express-highlights middleware can use templates cont
     var server;
     before(function(done) {
         startTestServerWithoutExtraLanguages(function(s) {
-            console.log("Server is up, s = " + s);
             server = s;
             done();
         });
@@ -51,17 +51,24 @@ describe("A Server with the express-highlights middleware can use templates cont
         server.close();
     });
 
-    describe("Using templates containing JS code", function() {
+    describe("It should be possible to highlight JS Code in templates without specifying a language", function() {
         var url = "http://localhost:8080/views/js";
 
-        it("returns status 200", function(done) {
+        it("returns status 200 when we request the JS view", function(done) {
             request(url, function(error, response, body) {
-                console.log("ERR: " + error);
-                console.log("RESP: " + response);
-                console.log("BODY: " + body);
-                expect(error).to.not.exist();
+                expect(error).to.be.null;
                 expect(response.statusCode).to.equal(200);
-
+                console.log(body);
+                done();
+            });
+        });
+        
+        it("returns highlighted JS code when we request the JS view", function(done) {
+            request(url, function(error, response, body) {
+                expect(error).to.be.null;
+                const $ = cheerio.load(body);
+                expect($('html div pre.editor').length).to.equal(1);
+                expect($('html div pre.editor span.js').length).to.equal(5);
                 done();
             });
         });
