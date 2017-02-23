@@ -78,3 +78,12 @@ const hbs = exphbs.create({
     }
 });
 ```
+
+Now, use the `code` directive with `"scala"` as an argument:
+
+```handlebars
+<div>
+{{#code "scala"}}
+val hello = "world"
+{{/code}}
+```
