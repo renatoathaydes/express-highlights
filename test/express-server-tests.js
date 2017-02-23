@@ -77,7 +77,7 @@ describe("A Server with the express-highlights middleware can use templates cont
                 expect(error).to.be.null;
                 const $ = cheerio.load(body);
                 expect($('html div pre.editor').length).to.equal(1);
-                expect($('html div pre.editor span.js').length).to.equal(5);
+                expect($('html div pre.editor span.js').length).to.equal(6);
                 done();
             });
         });
