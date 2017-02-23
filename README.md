@@ -38,6 +38,26 @@ const hbs = exphbs.create({
 app.engine('handlebars', hbs.engine);
 ```
 
+Now, in your handlebars templates, you can wrap your code snippets into `code` blocks like this:
+
+```handlebars
+<div>
+{{#code}}
+var hello = "world"
+{{/code}}
+</div>
+```
+
+The default language is JS, but you can change that by giving the `code` directive the name of the language:
+
+```handlebars
+<div>
+{{#code "java"}}
+String hello = "world";
+{{/code}}
+</div>
+```
+
 ## Using custom languages
 
 Highlights supports a few languages out-of-the-box, such as JavaScript, CoffeeScript, Java and Python.
