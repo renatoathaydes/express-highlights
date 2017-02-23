@@ -9,14 +9,16 @@ const cheerio = require('cheerio');
 
 const expect = chai.expect;
 
-assert(typeof codeHighlight === 'function');
+assert(typeof codeHighlight === 'object');
+
+const highlight = codeHighlight.highlight;
 
 function startTestServerWithoutExtraLanguages(done) {
     var hbs = exphbs.create({
         layoutsDir: __dirname + "/views/layouts/",
         defaultLayout: 'main.handlebars',
         helpers: {
-            code: codeHighlight
+            code: highlight
         }
     });
 
