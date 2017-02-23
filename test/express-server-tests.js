@@ -7,14 +7,21 @@ const codeHighlight = require("..");
 const assert = require('assert');
 const cheerio = require('cheerio');
 
+// for testing custom added language packages
+const scala = require.resolve('language-scala/package.json');
+
 const expect = chai.expect;
 
+// let's make sure we didn't mess up the exports
 assert(typeof codeHighlight === 'object');
 
 const highlight = codeHighlight.highlight;
 
+assert(typeof highlight === 'function');
+assert(typeof codeHighlight.use === 'function');
+
 function startTestServerWithoutExtraLanguages(done) {
-    var hbs = exphbs.create({
+    const hbs = exphbs.create({
         layoutsDir: __dirname + "/views/layouts/",
         defaultLayout: 'main.handlebars',
         helpers: {
@@ -22,8 +29,8 @@ function startTestServerWithoutExtraLanguages(done) {
         }
     });
 
-    var app = express();
-    var server = http.createServer(app);
+    const app = express();
+    const server = http.createServer(app);
 
     app.engine('handlebars', hbs.engine);
     app.set('view engine', 'handlebars');
@@ -34,7 +41,7 @@ function startTestServerWithoutExtraLanguages(done) {
     });
 
     server.listen(8080, process.env.IP || "0.0.0.0", function() {
-        var addr = server.address();
+        const addr = server.address();
         console.log("Test Server listening at", addr.address + ":" + addr.port);
         done(server);
     });
@@ -54,7 +61,7 @@ describe("A Server with the express-highlights middleware can use templates cont
     });
 
     describe("It should be possible to highlight JS Code in templates without specifying a language", function() {
-        var url = "http://localhost:8080/views/js";
+        const url = "http://localhost:8080/views/js";
 
         it("returns status 200 when we request the JS view", function(done) {
             request(url, function(error, response, body) {
@@ -77,7 +84,7 @@ describe("A Server with the express-highlights middleware can use templates cont
     });
 
     describe("It should be possible to highlight Java Code in templates explicitly specifying the language", function() {
-        var url = "http://localhost:8080/views/java";
+        const url = "http://localhost:8080/views/java";
 
         it("returns status 200 when we request the Java view", function(done) {
             request(url, function(error, response, body) {
@@ -94,6 +101,31 @@ describe("A Server with the express-highlights middleware can use templates cont
                 const $ = cheerio.load(body);
                 expect($('html div pre.editor').length).to.equal(1);
                 expect($('html div pre.editor span.java').length).to.equal(7);
+                done();
+            });
+        });
+    });
+    
+
+    describe("It should be possible to highlight Scala Code in templates by installing the appropriate module", function() {
+        const url = "http://localhost:8080/views/scala";
+        codeHighlight.use(scala);
+
+        it("returns status 200 when we request the Scala view", function(done) {
+            request(url, function(error, response, body) {
+                expect(error).to.be.null;
+                expect(response.statusCode).to.equal(200);
+                console.log(body);
+                done();
+            });
+        });
+
+        it("returns highlighted Scala code when we request the Scala view (with the Scala package being used)", function(done) {
+            request(url, function(error, response, body) {
+                expect(error).to.be.null;
+                const $ = cheerio.load(body);
+                expect($('html div pre.editor').length).to.equal(1);
+                expect($('html div pre.editor span.scala').length).to.equal(8);
                 done();
             });
         });

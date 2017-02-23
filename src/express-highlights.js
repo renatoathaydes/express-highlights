@@ -19,7 +19,6 @@ exports.highlight = function(a, b) {
         options = b;
     }
 
-    console.log("Language set to : " + lang);
     lang = lang || "source.js";
     return highlights.highlightSync({
         fileContents: options.fn(this),
