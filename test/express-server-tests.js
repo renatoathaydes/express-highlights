@@ -62,13 +62,36 @@ describe("A Server with the express-highlights middleware can use templates cont
                 done();
             });
         });
-        
-        it("returns highlighted JS code when we request the JS view", function(done) {
+
+        it("returns highlighted JS code when we request the JS view (code directive without an argument)", function(done) {
             request(url, function(error, response, body) {
                 expect(error).to.be.null;
                 const $ = cheerio.load(body);
                 expect($('html div pre.editor').length).to.equal(1);
                 expect($('html div pre.editor span.js').length).to.equal(5);
+                done();
+            });
+        });
+    });
+
+    describe("It should be possible to highlight Java Code in templates explicitly specifying the language", function() {
+        var url = "http://localhost:8080/views/java";
+
+        it("returns status 200 when we request the Java view", function(done) {
+            request(url, function(error, response, body) {
+                expect(error).to.be.null;
+                expect(response.statusCode).to.equal(200);
+                console.log(body);
+                done();
+            });
+        });
+
+        it("returns highlighted Java code when we request the Java view (code directive with an argument)", function(done) {
+            request(url, function(error, response, body) {
+                expect(error).to.be.null;
+                const $ = cheerio.load(body);
+                expect($('html div pre.editor').length).to.equal(1);
+                expect($('html div pre.editor span.java').length).to.equal(7);
                 done();
             });
         });
