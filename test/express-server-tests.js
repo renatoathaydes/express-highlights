@@ -12,10 +12,11 @@ assert(typeof codeHighlight === 'function');
 
 function startTestServerWithoutExtraLanguages(done) {
     var hbs = exphbs.create({
-        defaultLayout: 'main.handlebars'
-            ,helpers: {
-                code: codeHighlight
-            }
+        layoutsDir: __dirname + "/views/layouts/",
+        defaultLayout: 'main.handlebars',
+        helpers: {
+            code: codeHighlight
+        }
     });
 
     var app = express();
@@ -23,12 +24,13 @@ function startTestServerWithoutExtraLanguages(done) {
 
     app.engine('handlebars', hbs.engine);
     app.set('view engine', 'handlebars');
+    app.set('views', __dirname + '/views/');
 
     app.get('/views/:name', function(req, res) {
         res.render(req.params.name);
     });
 
-    server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function() {
+    server.listen(8080, process.env.IP || "0.0.0.0", function() {
         var addr = server.address();
         console.log("Test Server listening at", addr.address + ":" + addr.port);
         done(server);
@@ -57,7 +59,7 @@ describe("A Server with the express-highlights middleware can use templates cont
                 console.log("ERR: " + error);
                 console.log("RESP: " + response);
                 console.log("BODY: " + body);
-                expect(error).not.exist();
+                expect(error).to.not.exist();
                 expect(response.statusCode).to.equal(200);
 
                 done();
