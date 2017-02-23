@@ -12,6 +12,12 @@ such as the [atom-dark-syntax](https://github.com/atom/atom-dark-syntax) and the
 
 See below how to use them in your own HTML pages.
 
+## Installation
+
+```
+npm install express-highlights
+```
+
 ## Basic Usage
 
 Include your favourite syntax highlight [theme](http://atom.github.io/highlights/examples/)'s CSS in the
